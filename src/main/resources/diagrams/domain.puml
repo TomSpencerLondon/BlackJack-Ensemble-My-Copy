@@ -1,0 +1,108 @@
+@startuml
+title Domain - Class Diagram
+
+enum Rank {
+    + int value()
+    + String display()
+    ___
+    ACE(1, "A")
+    TWO(2, "2")
+    THREE(3, "3")
+    FOUR(4, "4")
+    FIVE(5, "5")
+    SIX(6, "6")
+    SEVEN(7, "7")
+    EIGHT(8, "8")
+    NINE(9, "9")
+    TEN(10, "10")
+    JACK(10, "J")
+    QUEEN(10, "Q")
+    KING(10, "K")
+}
+
+enum Suit {
+    + String symbol()
+    + boolean isRed()
+    ---
+    HEARTS("♥", true)
+    CLUBS("♣", false)
+    DIAMONDS("♦", true)
+    SPADES("♠", false)
+}
+
+class Card {
+    - Suit suit
+    - Rank rank
+    + int rankValue()
+    + Suit suit()
+    + Rank rank()
+}
+
+class Wallet {
+    - int balance
+    + isEmpty()
+    + addMoney(int amount)
+    + int balance()
+    + void bet(int betAmount)
+    + void requireAmountZeroOrMore(int amount)
+    + void requireSufficientBalanceFor(int betAmount)
+}
+
+class Deck {
+    - List<Card> cards
+    + int size()
+    + Card draw()
+}
+
+enum GameOutcome {
+    + String display()
+    ---
+    PLAYER_BUSTED("You Busted, so you lose."),
+    DEALER_BUSTED("Dealer went BUST, Player wins! Yay for you!!"),
+    PLAYER_BEATS_DEALER("You beat the Dealer!"),
+    PLAYER_PUSHES("Push: Nobody wins, we'll call it even."),
+    PLAYER_LOSES("You lost to the Dealer."),
+    PLAYER_WINS_BLACKJACK("You won Blackjack!");
+}
+
+class Hand {
+    - List<Card> cards
+    + int value()
+    + Card faceUpCard()
+    + boolean dealerMustDrawCard()
+    + List<Card> cards()
+    + void drawFrom(Deck deck)
+    + boolean isBusted()
+    + boolean pushes(Hand hand)
+    + boolean beats(Hand hand)
+    + boolean hasBlackjack()
+}
+
+class Game {
+    - Long id
+    - Deck deck
+    - Hand dealerHand
+    - Hand playerHand
+    - GameMonitor gameMonitor
+    - boolean playerDone
+
+    + void dealRoundOfCards()
+    + GameOutcome determineOutcome()
+    + void dealerTurn()
+    + Hand dealerHand()
+    + void initialDeal()
+    + void playerHits()
+    + void playerStands()
+    + void updatePlayerDoneTo(boolean playerIsDone)
+    + boolean isPlayerDone()
+    + Long getId()
+    + void setId(Long id)
+}
+
+Game -> Hand : <<creates>>
+Game -down-> GameOutcome
+Hand -down-> Card
+Hand -> Deck : drawFrom()
+Card -down-> Suit
+Card -down-> Rank
+@enduml
